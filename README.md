@@ -1,1 +1,242 @@
-# 2
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprendre le système Cap and Trade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f0f4f8; }
+        
+        .step-card { transition: all 0.3s ease; }
+        .active-step { border-color: #3b82f6; ring: 2px; ring-color: #3b82f6; }
+        
+        .progress-fill { transition: width 0.5s ease-in-out; }
+        
+        .money-anim {
+            animation: moveMoney 1s ease-in-out forwards;
+        }
+
+        @keyframes moveMoney {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+
+        .slider-cap::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px; height: 24px;
+            background: #1e293b;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid #3b82f6;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto bg-white shadow-2xl rounded-[2.5rem] overflow-hidden border border-slate-200">
+        
+        <!-- HEADER -->
+        <div class="bg-slate-900 p-8 text-white">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-center md:text-left">
+                    <h1 class="text-3xl font-extrabold tracking-tight">Le Système "Cap and Trade"</h1>
+                    <p class="text-slate-400 text-sm mt-1">Comment transformer la pollution en coût et la vertu en profit.</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 text-center min-w-[200px]">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Prix de la tonne CO₂</span>
+                    <span id="price-display" class="text-3xl font-black text-blue-400">50 €</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1 : LE PLAFOND (CAP) -->
+        <div class="p-8 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                <div>
+                    <h2 class="font-bold text-slate-800">L'ÉTAT FIXE LE PLAFOND (LE "CAP")</h2>
+                    <p class="text-xs text-slate-500">Réduisez le plafond pour rendre les quotas plus rares.</p>
+                </div>
+            </div>
+            
+            <div class="max-w-2xl mx-auto px-4">
+                <input type="range" id="cap-slider" min="20" max="80" value="50" class="slider-cap w-full h-2 bg-slate-200 rounded-lg appearance-none">
+                <div class="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase">
+                    <span>Plafond Ambitieux (Rare)</span>
+                    <span>Plafond Souple (Abondant)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2 : LES ACTEURS -->
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- ENTREPRISE A : VERTE -->
+            <div class="p-6 rounded-3xl border-2 border-slate-100 bg-white relative">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <div class="text-3xl">🍃</div>
+                        <h3 class="font-bold text-slate-800 mt-2">Entreprise Propre</h3>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold">Investit dans le futur</p>
+                    </div>
+                    <div id="status-a" class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase">Excédent</div>
+                </div>
+
+                <!-- Jauge de comparaison -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-[10px] font-bold mb-1">
+                            <span>QUOTAS REÇUS (DROIT DE POLLUER)</span>
+                            <span id="val-cap-a" class="text-blue-600">50t</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full">
+                            <div id="bar-cap-a" class="bg-blue-500 h-full rounded-full progress-fill" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[10px] font-bold mb-1">
+                            <span>POLLUTION RÉELLE</span>
+                            <span class="text-slate-600">20t</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full">
+                            <div class="bg-slate-400 h-full rounded-full" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-50 flex justify-between items-center">
+                    <span class="text-xs font-semibold text-slate-400 italic">Gain potentiel par la vente :</span>
+                    <span id="gain-a" class="text-xl font-black text-emerald-600">+1500 €</span>
+                </div>
+            </div>
+
+            <!-- ENTREPRISE B : POLLUANTE -->
+            <div class="p-6 rounded-3xl border-2 border-slate-100 bg-white relative">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <div class="text-3xl">🏭</div>
+                        <h3 class="font-bold text-slate-800 mt-2">Entreprise Polluante</h3>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold">Retard technologique</p>
+                    </div>
+                    <div id="status-b" class="bg-rose-100 text-rose-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tighter">Déficit</div>
+                </div>
+
+                <!-- Jauge de comparaison -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-[10px] font-bold mb-1">
+                            <span>QUOTAS REÇUS (DROIT DE POLLUER)</span>
+                            <span id="val-cap-b" class="text-blue-600">50t</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full">
+                            <div id="bar-cap-b" class="bg-blue-500 h-full rounded-full progress-fill" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[10px] font-bold mb-1">
+                            <span>POLLUTION RÉELLE</span>
+                            <span class="text-slate-600">80t</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full">
+                            <div class="bg-slate-400 h-full rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-50 flex justify-between items-center">
+                    <span class="text-xs font-semibold text-slate-400 italic">Coût estimé de l'achat :</span>
+                    <span id="cost-b" class="text-xl font-black text-rose-600">-1500 €</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER : L'ÉCHANGE (TRADE) -->
+        <div class="p-8 bg-slate-900 text-white">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
+                <h2 class="font-bold uppercase tracking-widest text-sm">L'ÉCHANGE (LE "TRADE")</h2>
+            </div>
+            <p id="final-desc" class="text-sm text-slate-400 leading-relaxed italic">
+                C'est ici que le marché opère : l'entreprise polluante achète les droits en trop de l'entreprise propre. Le coût de la pollution devient une réalité financière.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const slider = document.getElementById('cap-slider');
+        const priceDisplay = document.getElementById('price-display');
+        
+        // Ent A elements
+        const barCapA = document.getElementById('bar-cap-a');
+        const valCapA = document.getElementById('val-cap-a');
+        const gainA = document.getElementById('gain-a');
+        const statusA = document.getElementById('status-a');
+
+        // Ent B elements
+        const barCapB = document.getElementById('bar-cap-b');
+        const valCapB = document.getElementById('val-cap-b');
+        const costB = document.getElementById('cost-b');
+        const statusB = document.getElementById('status-b');
+
+        const finalDesc = document.getElementById('final-desc');
+
+        function update() {
+            const cap = parseInt(slider.value); // Plafond (ex: 50t par usine)
+            
+            // Logique de rareté : plus le cap est bas, plus le prix est élevé
+            // De 20 à 80. Si cap=20 (strict), prix haut. Si cap=80 (souple), prix bas.
+            const price = Math.round(Math.pow((100 - cap) / 10, 2) * 1.5 + 15);
+            priceDisplay.innerText = price + " €";
+
+            // Mise à jour visuelle des barres bleues (Cap)
+            barCapA.style.width = cap + "%";
+            barCapB.style.width = cap + "%";
+            valCapA.innerText = cap + "t";
+            valCapB.innerText = cap + "t";
+
+            // Calcul financier pour A (Pollue 20t)
+            const diffA = cap - 20;
+            if (diffA > 0) {
+                gainA.innerText = "+" + (diffA * price) + " €";
+                gainA.className = "text-xl font-black text-emerald-600";
+                statusA.innerText = "Excédent : Elle vend";
+                statusA.className = "bg-emerald-100 text-emerald-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase";
+            } else {
+                gainA.innerText = (diffA * price) + " €";
+                gainA.className = "text-xl font-black text-rose-600";
+                statusA.innerText = "Déficit";
+                statusA.className = "bg-rose-100 text-rose-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tighter";
+            }
+
+            // Calcul financier pour B (Pollue 80t)
+            const diffB = cap - 80;
+            costB.innerText = (diffB * price) + " €";
+            if (diffB >= 0) {
+                costB.className = "text-xl font-black text-emerald-600";
+                statusB.innerText = "Conforme";
+                statusB.className = "bg-emerald-100 text-emerald-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase";
+            } else {
+                costB.className = "text-xl font-black text-rose-600";
+                statusB.innerText = "Déficit : Elle achète";
+                statusB.className = "bg-rose-100 text-rose-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tighter";
+            }
+
+            // Description pédagogique
+            if (cap < 40) {
+                finalDesc.innerText = "Plafond STRICT : Les permis sont rares et valent cher ("+price+"€). L'entreprise polluante paie une fortune, ce qui l'oblige à investir pour réduire sa pollution.";
+            } else if (cap > 60) {
+                finalDesc.innerText = "Plafond SOUPLE : Il y a trop de permis sur le marché. Le prix est trop bas ("+price+"€) pour encourager l'innovation. Le système est inefficace.";
+            } else {
+                finalDesc.innerText = "Plafond ÉQUILIBRÉ : Le prix du carbone ("+price+"€) est suffisant pour récompenser l'entreprise propre et pénaliser la polluante.";
+            }
+        }
+
+        slider.addEventListener('input', update);
+        update();
+    </script>
+</body>
+</html>
